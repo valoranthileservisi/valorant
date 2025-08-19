@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valorant Random Hesap Servisi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff4655;
+            --secondary-color: #0f1923;
+            --accent-color: #66c1ff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--secondary-color);
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #1a2634 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1500px;
+            overflow: hidden;
+        }
+        .valorant-container {
+            width: 95%;
+            max-width: 1400px;
+            height: 90vh;
+            background: rgba(15, 25, 35, 0.6);
+            border-radius: 20px;
+            box-shadow: 0 0 80px rgba(255, 70, 85, 0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .agent-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.3;
+        }
+        .agent-background img {
+            position: absolute;
+            max-height: 70%;
+            opacity: 0.5;
+            transition: all 0.5s ease;
+        }
+        .agent-background img:nth-child(1) { 
+            left: -10%; 
+            top: 10%; 
+            transform: rotate(-15deg);
+            animation: agentMove1 10s infinite alternate;
+        }
+        .agent-background img:nth-child(2) { 
+            right: -10%; 
+            bottom: 10%; 
+            transform: rotate(15deg);
+            animation: agentMove2 12s infinite alternate;
+        }
+        @keyframes agentMove1 {
+            from { transform: translateY(0) rotate(-15deg); }
+            to { transform: translateY(50px) rotate(-10deg); }
+        }
+        @keyframes agentMove2 {
+            from { transform: translateY(0) rotate(15deg); }
+            to { transform: translateY(-50px) rotate(10deg); }
+        }
+        .valorant-header {
+            background: rgba(255,70,85,0.1);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            position: relative;
+            z-index: 10;
+        }
+        .valorant-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 24px;
+            text-shadow: 0 0 15px rgba(255,70,85,0.5);
+        }
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+            z-index: 10;
+            position: relative;
+        }
+        .trust-badge {
+            background: rgba(31,41,55,0.7);
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s;
+        }
+        .trust-badge:hover {
+            transform: scale(1.05);
+        }
+        .trust-badge i {
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+        .speech-bubble {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, rgba(31,41,55,0.9) 0%, rgba(15,25,35,0.9) 100%);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 15px;
+            max-width: 300px;
+            box-shadow: 0 0 30px rgba(255, 70, 85, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .speech-bubble.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .speech-bubble p {
+            color: #ffffff;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .weapon-showcase {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            perspective: 2000px;
+            overflow: hidden;
+            z-index: 5;
+        }
+        .weapon-carousel {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .weapon-item {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.5;
+            border-radius: 15px;
+            transition: all 0.5s ease;
+            transform: rotateY(var(--rotate)) translateZ(400px);
+            box-shadow: 0 0 30px rgba(255, 70, 85, 0.2);
+        }
+        .weapon-item.active {
+            opacity: 1;
+            transform: rotateY(var(--rotate)) translateZ(500px) scale(1.2);
+            box-shadow: 0 0 50px rgba(255, 70, 85, 0.5);
+        }
+        .password-section {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px;
+            background: linear-gradient(to top, rgba(15, 25, 35, 0.8), transparent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+        .password-card {
+            background: rgba(31,41,55,0.7);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 70, 85, 0.3);
+            width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            background-color: rgba(15, 25, 35, 0.7);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #ff6b7a;
+            transform: scale(1.05);
+        }
+        .account-details-template {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 0;
+            background: linear-gradient(135deg, rgba(31,41,55,0.9) 0%, rgba(15,25,35,0.9) 100%);
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 100px rgba(255, 70, 85, 0.3);
+            z-index: 1000;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .account-details-template.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        .account-details-template h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .account-details-template .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(15, 25, 35, 0.5);
+            border-radius: 10px;
+        }
+        .account-details-template .detail-item strong {
+            color: var(--primary-color);
+        }
+        .close-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .close-btn:hover {
+            background-color: #ff6b7a;
+        }
+        .explosion-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .explosion-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .weapon-reveal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 25, 35, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .weapon-reveal-item {
+            width: 200px;
+            height: 200px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s ease;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 70, 85, 0.3);
+        }
+        .weapon-reveal-item.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="valorant-container">
+        <div class="agent-background">
+            <img src="https://static.wikia.nocookie.net/valorant/images/f/f4/Jett_icon.png" alt="Jett">
+            <img src="https://static.wikia.nocookie.net/valorant/images/0/05/Reyna_icon.png" alt="Reyna">
+        </div>
+
+        <div class="trust-badges">
+            <div class="trust-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span>Güvenli Hesap</span>
+            </div>
+            <div class="trust-badge">
+                <i class="fas fa-lock"></i>
+                <span>Garanti Altında</span>
+            </div>
+            <div class="trust-badge">
+                <i class="fas fa-check-circle"></i>
+                <span>Onaylı Hesap</span>
+            </div>
+        </div>
+
+        <div class="valorant-header">
+            <h1>Valorant Random Hesap</h1>
+        </div>
+        
+        <div class="weapon-showcase">
+            <div class="weapon-carousel" id="weaponCarousel"></div>
+        </div>
+
+        <div class="password-section" id="passwordSection">
+            <div class="password-card">
+                <h2>Hesap Erişimi</h2>
+                <input type="password" class="password-input" id="passwordInput" placeholder="Şifrenizi Girin">
+                <br>
+                <button class="submit-btn" onclick="checkPassword()">Giriş Yap</button>
+            </div>
+        </div>
+
+        <div class="speech-bubble" id="speechBubble">
+            <p>🔥 En güvenilir ve garantili Valorant hesapları burada! Hemen şimdi benzersiz bir hesapla oyunun tadını çıkarın! 💯</p>
+        </div>
+    </div>
+
+    <div class="account-details-template" id="accountDetailsTemplate">
+        <h2>Hesap Detayları</h2>
+        <div class="detail-item">
+            <strong>📧 E-posta</strong>
+            <span id="emailDetail"></span>
+        </div>
+        <div class="detail-item">
+            <strong>🏆 Hesap Türü</strong>
+            <span>VIP Premium</span>
+        </div>
+        <div class="detail-item">
+            <strong>⏳ Garanti</strong>
+            <span>30 Gün Tam Destek</span>
+        </div>
+        <div class="detail-item">
+            <strong>🎮 Rank</strong>
+            <span>Radiant Seviye</span>
+        </div>
+        <div class="detail-item">
+            <strong>🔫 Skin Koleksiyonu</strong>
+            <span>Tam Açık</span>
+        </div>
+        <button class="close-btn" onclick="closeAccountDetails()">Kapat</button>
+    </div>
+
+    <div class="weapon-reveal" id="weaponReveal"></div>
+    <div class="explosion-container" id="explosionContainer"></div>
+
+    <script>
+        const valorantAPIs = [
+            'https://valorant-api.com/v1/weapons',
+            'https://valorant-api.com/v1/agents',
+            'https://valorant-api.com/v1/sprays'
+        ];
+
+        const validPasswords = ['12345', 'csgo', 'valorant', 'vip', 'premium'];
+        const randomEmails = [
+            'gamer123@gmail.com', 
+            'pro_player@hotmail.com', 
+            'valorant_master@outlook.com',
+            'esports_legend@yahoo.com',
+            'gaming_hero@protonmail.com',
+            'valorant_pro@gmail.com',
+            'ranked_player@hotmail.com',
+            'competitive_gamer@outlook.com'
+        ];
+
+        let weaponItems = [];
+        let rotation = 0;
+        let rotationSpeed = 1;
+
+        async function fetchValorantItems() {
+            try {
+                const imagePromises = valorantAPIs.map(async (url) => {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    return data.data
+                        .map(item => item.displayIcon || item.fullPortrait || item.displayName)
+                        .filter(img => img && img.startsWith('http'))
+                        .slice(0, 30);
+                });
+
+                // Özel URL'leri ekle
+                const specialImages = [
+                    'https://i.ytimg.com/vi/T2lVb9FKYH4/maxresdefault.jpg',
+                    'https://image-proxy.bo3.gg/uploads/news/109991/title_image/webp-3e329665cb741510306e15490dcbdd05.webp.webp?w=1248&h=624',
+                    'https://images2.minutemediacdn.com/image/upload/c_crop,w_3838,h_2158,x_0,y_0/c_fill,w_720,ar_16:9,f_auto,q_auto,g_auto/images/voltaxMediaLibrary/mmsport/esports_illustrated/01jgwhap67wqry3wtn90.jpg',
+                    'https://imgsvc.trackercdn.com/url/size(1280x720),fit(cover),quality(100)/https%3A%2F%2Fcms.tracker.gg%2Fcontent%2Fimages%2F2025%2F02%2Fb738f6773a68cc3e10104e25fd5b51e229e648da-1920x1080.jpg/image.jpg',
+                    'https://www.esporgazetesi.com/wp-content/uploads/2021/05/thetfull.jpg'
+                ];
+
+                const results = await Promise.all(imagePromises);
+                // Özel görüntüleri başa ekle
+                weaponItems = [...specialImages, ...results.flat()];
+
+                console.log('Yüklenen Görüntüler:', weaponItems);
+
+                createWeaponCarousel();
+            } catch (error) {
+                console.error('Görüntüler yüklenirken hata:', error);
+            }
+        }
+
+        function createWeaponCarousel() {
+            const carousel = document.getElementById('weaponCarousel');
+            carousel.innerHTML = '';
+            
+            weaponItems.slice(0, 15).forEach((item, index) => {
+                const weaponItem = document.createElement('div');
+                weaponItem.classList.add('weapon-item');
+                
+                // Görüntü yükleme hatası durumunda alternatif içerik
+                weaponItem.onerror = function() {
+                    console.error('Görüntü yüklenemedi:', item);
+                    this.style.backgroundImage = 'none';
+                    this.textContent = 'Görüntü Yüklenemedi';
+                };
+
+                // Arka plan görüntüsünü ayarla ve konsola yazdır
+                console.log('Şu an yüklenen görüntü:', item);
+                weaponItem.style.backgroundImage = `url(${item})`;
+                weaponItem.style.setProperty('--rotate', `${index * (360 / 15)}deg`);
+                carousel.appendChild(weaponItem);
+            });
+
+            animateCarousel();
+        }
+
+        function animateCarousel() {
+            const items = document.querySelectorAll('.weapon-item');
+            
+            function rotate() {
+                rotation += rotationSpeed;
+                items.forEach((item, index) => {
+                    const currentRotation = (index * (360 / 15) + rotation) % 360;
+                    item.style.setProperty('--rotate', `${currentRotation}deg`);
+                    
+                    if (Math.abs(currentRotation) < 30 || Math.abs(currentRotation - 360) < 30) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+
+                requestAnimationFrame(rotate);
+            }
+
+            rotate();
+        }
+
+        function createExplosionEffect() {
+            const explosionContainer = document.getElementById('explosionContainer');
+            explosionContainer.innerHTML = '';
+
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            for (let i = 0; i < 200; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('explosion-particle');
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 800 + 200;
+
+                const finalX = centerX + Math.cos(angle) * distance;
+                const finalY = centerY + Math.sin(angle) * distance;
+
+                particle.style.left = `${centerX}px`;
+                particle.style.top = `${centerY}px`;
+                particle.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+
+                particle.animate([
+                    { transform: 'scale(0)', opacity: 1 },
+                    { 
+                        transform: `translate(${finalX - centerX}px, ${finalY - centerY}px) scale(${Math.random() * 3 + 1})`, 
+                        opacity: 0 
+                    }
+                ], {
+                    duration: 1500,
+                    easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)'
+                });
+
+                explosionContainer.appendChild(particle);
+            }
+        }
+
+        function revealWeapons() {
+            const weaponReveal = document.getElementById('weaponReveal');
+            weaponReveal.innerHTML = '';
+            weaponReveal.style.display = 'flex';
+
+            weaponItems.slice(0, 30).forEach((item, index) => {
+                const weaponItem = document.createElement('div');
+                weaponItem.classList.add('weapon-reveal-item');
+                weaponItem.style.backgroundImage = `url(${item})`;
+
+                setTimeout(() => {
+                    weaponItem.classList.add('show');
+                }, index * 100);
+
+                weaponReveal.appendChild(weaponItem);
+            });
+        }
+
+        function checkPassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordSection = document.getElementById('passwordSection');
+            const accountDetailsTemplate = document.getElementById('accountDetailsTemplate');
+
+            if (validPasswords.includes(passwordInput.value)) {
+                // Yavaşlatma efekti
+                rotationSpeed = 0.2;
+
+                // Şifre bölümünü gizle
+                passwordSection.style.display = 'none';
+                
+                // Hesap detayları için hazırlık
+                setTimeout(() => {
+                    const randomEmail = randomEmails[Math.floor(Math.random() * randomEmails.length)];
+                    document.getElementById('emailDetail').textContent = randomEmail;
+                    
+                    // Detayları göster
+                    accountDetailsTemplate.classList.add('show');
+                }, 2000);
+            } else {
+                alert('Geçersiz Şifre! Lütfen doğru şifreyi girin.');
+            }
+        }
+
+        function closeAccountDetails() {
+            const accountDetailsTemplate = document.getElementById('accountDetailsTemplate');
+            const passwordSection = document.getElementById('passwordSection');
+
+            // Detayları gizle
+            accountDetailsTemplate.classList.remove('show');
+
+            // Şifre bölümünü geri getir
+            setTimeout(() => {
+                passwordSection.style.display = 'flex';
+                
+                // Dönüş hızını normale çevir
+                rotationSpeed = 1;
+                
+                // Input'u temizle
+                document.getElementById('passwordInput').value = '';
+            }, 500);
+        }
+
+        fetchValorantItems();
+
+        // Konuşan balon mesajları
+        const speechBubbleMessages = [
+            '🔥 En güvenilir ve garantili Valorant hesapları burada! Hemen şimdi benzersiz bir hesapla oyunun tadını çıkarın! 💯',
+            '💎 Sınırlı sayıda VIP hesaplar! Kaçırmayın, stoklar tükenmek üzere! 🚀',
+            '🏆 Radiant seviye hesaplarımızla anında yükselin! Rakiplerinizi şaşırtın! 💪',
+            '🛡️ %100 Güvenli Hesap Garantisi! İade hakkı ve tam destek. 👍',
+            '💸 Şimdi al, %20 indirim fırsatını kaçırma! Sınırlı süre teklif. ⏰',
+            '🎮 Tüm skinler açık, özel koleksiyon hesapları! Benzersiz bir deneyim. 🌟',
+            '🤝 24/7 Müşteri Desteği ile her zaman yanınızdayız! Güvenli alışveriş. 📞'
+        ];
+
+        function showSpeechBubble() {
+            const speechBubble = document.getElementById('speechBubble');
+            const messageIndex = Math.floor(Math.random() * speechBubbleMessages.length);
+            
+            speechBubble.innerHTML = `
+                <div class="speech-bubble-content">
+                    <p>${speechBubbleMessages[messageIndex]}</p>
+                    <div class="speech-bubble-actions">
+                        <button class="buy-now-btn" onclick="showPurchaseModal()">Hemen Satın Al</button>
+                    </div>
+                </div>
+            `;
+            
+            speechBubble.classList.add('show');
+        }
+
+        // Garanti detayları
+        function addGuaranteeSection() {
+            const guaranteeContainer = document.createElement('div');
+            guaranteeContainer.classList.add('guarantee-section');
+            
+            const guaranteeTitle = document.createElement('h2');
+            guaranteeTitle.innerHTML = '🏆 Benzersiz Hesap Güvencesi';
+            guaranteeContainer.appendChild(guaranteeTitle);
+
+            const guaranteeList = document.createElement('div');
+            guaranteeList.classList.add('guarantee-list');
+
+            const guaranteeDetails = [
+                {
+                    icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    `,
+                    text: '%100 Para İade Garantisi',
+                    color: '#4CAF50'
+                },
+                {
+                    icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="8.5" cy="7" r="4"></circle>
+                        <polyline points="20 8 20 14"></polyline>
+                        <line x1="23" y1="11" x2="17" y2="11"></line>
+                    </svg>
+                    `,
+                    text: '30 Gün İçinde Ücretsiz Değişim',
+                    color: '#2196F3'
+                },
+                {
+                    icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="M12 11v6"></path>
+                        <circle cx="12" cy="8" r="1"></circle>
+                    </svg>
+                    `,
+                    text: 'Hesap Güvenliği Tam Koruma',
+                    color: '#FF5722'
+                },
+                {
+                    icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    `,
+                    text: 'Anında Teslimat',
+                    color: '#9C27B0'
+                },
+                {
+                    icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    `,
+                    text: '7/24 Destek Hattı',
+                    color: '#FF9800'
+                },
+                {
+                    icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="10" r="3"></circle>
+                        <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"></path>
+                    </svg>
+                    `,
+                    text: 'Dünya Çapında Güvenilirlik',
+                    color: '#673AB7'
+                }
+            ];
+
+            guaranteeDetails.forEach(detail => {
+                const detailItem = document.createElement('div');
+                detailItem.classList.add('guarantee-item');
+                detailItem.innerHTML = `
+                    <div class="guarantee-icon" style="color: ${detail.color}">
+                        ${detail.icon}
+                    </div>
+                    <span class="guarantee-text">${detail.text}</span>
+                `;
+                guaranteeList.appendChild(detailItem);
+            });
+
+            guaranteeContainer.appendChild(guaranteeList);
+            document.querySelector('.valorant-container').appendChild(guaranteeContainer);
+        }
+
+        // Garanti bölümü için stil eklemeleri
+        const guaranteeStyles = `
+        .guarantee-section {
+            background: linear-gradient(135deg, rgba(31,41,55,0.7) 0%, rgba(15,25,35,0.7) 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 70, 85, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .guarantee-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                transparent 0,
+                rgba(255,70,85,0.05) 50px,
+                transparent 100px
+            );
+            transform: rotate(-45deg);
+            animation: glitchBackground 5s linear infinite;
+        }
+        @keyframes glitchBackground {
+            0% { transform: rotate(-45deg) translateX(0); }
+            100% { transform: rotate(-45deg) translateX(-100%); }
+        }
+        .guarantee-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 10;
+        }
+        .guarantee-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            z-index: 10;
+        }
+        .guarantee-item {
+            display: flex;
+            align-items: center;
+            background: rgba(31,41,55,0.5);
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: calc(33.33% - 15px);
+            box-sizing: border-box;
+        }
+        .guarantee-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 70, 85, 0.3);
+        }
+        .guarantee-icon {
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .guarantee-icon svg {
+            width: 30px;
+            height: 30px;
+            stroke-width: 2;
+        }
+        .guarantee-text {
+            font-size: 14px;
+        }
+        `;
+
+        const guaranteeStyleElement = document.createElement('style');
+        guaranteeStyleElement.textContent = guaranteeStyles;
+        document.head.appendChild(guaranteeStyleElement);
+
+        function addTelegramLink() {
+            const telegramLink = document.createElement('a');
+            telegramLink.href = 'https://t.me/maskelix1';
+            telegramLink.target = '_blank';
+            telegramLink.classList.add('telegram-support-link');
+            telegramLink.innerHTML = `
+                <i class="fab fa-telegram telegram-icon"></i> 
+                Telegram Destek Hattı
+            `;
+            
+            const socialSection = document.querySelector('.social-links');
+            if (socialSection) {
+                socialSection.appendChild(telegramLink);
+            }
+        }
+
+        function showPurchaseModal() {
+            const purchaseModal = document.createElement('div');
+            purchaseModal.classList.add('purchase-modal');
+            purchaseModal.innerHTML = `
+                <div class="purchase-modal-content">
+                    <h2>🎮 Valorant Hesap Paketleri</h2>
+                    <div class="purchase-packages">
+                        <div class="package">
+                            <h3>🥉 Standart Paket</h3>
+                            <ul>
+                                <li>✅ Radiant Seviye Hesap</li>
+                                <li>✅ 5-10 Adet Nadir Skin</li>
+                                <li>✅ 30 Gün Hesap Garantisi</li>
+                                <li>✅ Temel Destek Hizmeti</li>
+                                <li>✅ Hızlı Teslimat</li>
+                            </ul>
+                            <div class="telegram-package-button" onclick="openTelegramLink()">
+                                ${telegramLogoSVG}
+                                <span>Hemen Satın Al</span>
+                            </div>
+                        </div>
+                        <div class="package">
+                            <h3>🥈 Premium Paket</h3>
+                            <ul>
+                                <li>✅ Immortal Seviye Hesap</li>
+                                <li>✅ 10-20 Adet Efsanevi Skin</li>
+                                <li>✅ 60 Gün Hesap Garantisi</li>
+                                <li>✅ Özel Destek Hattı</li>
+                                <li>✅ Hızlı ve Güvenli Teslimat</li>
+                                <li>✅ Ücretsiz Hesap İyileştirme</li>
+                            </ul>
+                            <div class="telegram-package-button" onclick="openTelegramLink()">
+                                ${telegramLogoSVG}
+                                <span>Hemen Satın Al</span>
+                            </div>
+                        </div>
+                        <div class="package">
+                            <h3>🥇 VIP Paket</h3>
+                            <ul>
+                                <li>✅ Radiant+ Seviye Hesap</li>
+                                <li>✅ 20+ Adet Ultra Nadir Skin</li>
+                                <li>✅ 90 Gün Tam Koruma Garantisi</li>
+                                <li>✅ 7/24 Özel Destek</li>
+                                <li>✅ Ücretsiz Skin Değişimi</li>
+                                <li>✅ Hesap Güvenliği Tam Koruma</li>
+                                <li>✅ Anında VIP Destek</li>
+                            </ul>
+                            <div class="telegram-package-button" onclick="openTelegramLink()">
+                                ${telegramLogoSVG}
+                                <span>Hemen Satın Al</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(purchaseModal);
+
+            // Paket Telegram butonları için stil
+            const packageButtonStyles = `
+            .purchase-packages {
+                display: flex;
+                justify-content: space-between;
+                gap: 20px;
+            }
+            .package {
+                flex: 1;
+                background: rgba(31,41,55,0.7);
+                border-radius: 15px;
+                padding: 20px;
+                transition: all 0.3s;
+                position: relative;
+                overflow: hidden;
+            }
+            .package::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: repeating-linear-gradient(
+                    transparent 0,
+                    rgba(255,70,85,0.05) 50px,
+                    transparent 100px
+                );
+                transform: rotate(-45deg);
+                animation: glitchBackground 5s linear infinite;
+            }
+            @keyframes glitchBackground {
+                0% { transform: rotate(-45deg) translateX(0); }
+                100% { transform: rotate(-45deg) translateX(-100%); }
+            }
+            .package:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(255,70,85,0.3);
+            }
+            .package h3 {
+                color: var(--primary-color);
+                margin-bottom: 15px;
+                position: relative;
+                z-index: 10;
+            }
+            .package ul {
+                list-style-type: none;
+                padding: 0;
+                position: relative;
+                z-index: 10;
+            }
+            .package li {
+                margin: 10px 0;
+                display: flex;
+                align-items: center;
+                color: #ffffff;
+            }
+            .telegram-package-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                background-color: #0088cc;
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                margin-top: 15px;
+                cursor: pointer;
+                transition: all 0.3s;
+                position: relative;
+                z-index: 10;
+            }
+            .telegram-package-button svg {
+                width: 30px;
+                height: 30px;
+                margin-right: 10px;
+            }
+            .telegram-package-button span {
+                font-weight: bold;
+            }
+            .telegram-package-button:hover {
+                background-color: #00a2ff;
+                transform: scale(1.05);
+            }
+            `;
+
+            const packageStyleElement = document.createElement('style');
+            packageStyleElement.textContent = packageButtonStyles;
+            document.head.appendChild(packageStyleElement);
+        }
+
+        // Özel Telegram logosu için SVG
+        const telegramLogoSVG = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 240 240">
+            <defs>
+                <linearGradient id="telegramGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#37aee2"/>
+                    <stop offset="100%" style="stop-color:#1e96c8"/>
+                </linearGradient>
+            </defs>
+            <path d="M240 120c0 66.274-53.726 120-120 120S0 186.274 0 120 53.726 0 120 0s120 53.726 120 120z" fill="url(#telegramGradient)"/>
+            <path d="M98 175c-3.888 0-3.227-1.468-4.568-5.17L82 132.207 216 48z" fill="#c8daea"/>
+            <path d="M98 175c3 0 4.325-1.372 6-3l16-15.558-19.958-12z" fill="#a9c9dd"/>
+            <path d="M100.04 144.41l48.36 35.729c5.519 3.045 9.501 1.468 10.876-5.123l19.685-92.763c2.015-8.08-3.08-11.746-8.36-9.349l-115.59 44.571c-7.89 3.169-7.843 7.638-1.438 9.613l29.663 9.259 68.673-43.325c3.242-1.965 6.218-.91 3.776 1.258z" fill="#ffffff"/>
+        </svg>
+        `;
+
+        // Telegram bağlantısı için özel fonksiyon
+        function openTelegramLink() {
+            window.open('https://t.me/maskelix1', '_blank');
+        }
+
+        // Telegram butonunu oluştur
+        function createTelegramButton() {
+            const telegramButton = document.createElement('div');
+            telegramButton.classList.add('telegram-direct-button');
+            telegramButton.innerHTML = `
+                <div class="telegram-button-content">
+                    ${telegramLogoSVG}
+                    <span>Hemen Al</span>
+                </div>
+            `;
+            telegramButton.onclick = openTelegramLink;
+            return telegramButton;
+        }
+
+        // Stil eklemeleri
+        const telegramButtonStyles = `
+        .telegram-direct-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0088cc;
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,136,204,0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .telegram-direct-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,136,204,0.6);
+        }
+        .telegram-button-content {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+        .telegram-button-content svg {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .telegram-button-content span {
+            font-size: 16px;
+        }
+        `;
+
+        // Stil eklemesi
+        const telegramStyleElement = document.createElement('style');
+        telegramStyleElement.textContent = telegramButtonStyles;
+        document.head.appendChild(telegramStyleElement);
+
+        // Sayfa yüklendiğinde Telegram butonunu ekle
+        window.addEventListener('load', () => {
+            const telegramButton = createTelegramButton();
+            document.body.appendChild(telegramButton);
+        });
+
+        // Satın alma modalındaki Telegram butonlarını güncelle
+        function showPurchaseModal() {
+            const purchaseModal = document.createElement('div');
+            purchaseModal.classList.add('purchase-modal');
+            purchaseModal.innerHTML = `
+                <div class="purchase-modal-content">
+                    <h2>🎮 Valorant Hesap Paketleri</h2>
+                    <div class="purchase-packages">
+                        <div class="package">
+                            <h3>🥉 Standart Paket</h3>
+                            <ul>
+                                <li>✅ Radiant Seviye Hesap</li>
+                                <li>✅ 5-10 Skin Koleksiyonu</li>
+                                <li>✅ 30 Gün Garanti</li>
+                                <li class="price">299 TL</li>
+                            </ul>
+                            <div class="telegram-package-button" onclick="openTelegramLink()">
+                                ${telegramLogoSVG}
+                                <span>Hemen Satın Al</span>
+                            </div>
+                        </div>
+                        <div class="package">
+                            <h3>🥈 Premium Paket</h3>
+                            <ul>
+                                <li>✅ Immortal Seviye Hesap</li>
+                                <li>✅ 10-20 Skin Koleksiyonu</li>
+                                <li>✅ 60 Gün Garanti</li>
+                                <li>✅ Özel Destek</li>
+                                <li class="price">499 TL</li>
+                            </ul>
+                            <div class="telegram-package-button" onclick="openTelegramLink()">
+                                ${telegramLogoSVG}
+                                <span>Hemen Satın Al</span>
+                            </div>
+                        </div>
+                        <div class="package">
+                            <h3>🥇 VIP Paket</h3>
+                            <ul>
+                                <li>✅ Radiant+ Hesap</li>
+                                <li>✅ 20+ Skin Koleksiyonu</li>
+                                <li>✅ 90 Gün Tam Garanti</li>
+                                <li>✅ 7/24 Özel Destek</li>
+                                <li>✅ Ücretsiz Skin Değişimi</li>
+                                <li class="price">799 TL</li>
+                            </ul>
+                            <div class="telegram-package-button" onclick="openTelegramLink()">
+                                ${telegramLogoSVG}
+                                <span>Hemen Satın Al</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(purchaseModal);
+
+            // Paket Telegram butonları için stil
+            const packageButtonStyles = `
+            .telegram-package-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                background-color: #0088cc;
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                margin-top: 15px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            .telegram-package-button svg {
+                width: 30px;
+                height: 30px;
+                margin-right: 10px;
+            }
+            .telegram-package-button span {
+                font-weight: bold;
+            }
+            .telegram-package-button:hover {
+                background-color: #00a2ff;
+                transform: scale(1.05);
+            }
+            `;
+
+            const packageStyleElement = document.createElement('style');
+            packageStyleElement.textContent = packageButtonStyles;
+            document.head.appendChild(packageStyleElement);
+        }
+
+        window.addEventListener('load', () => {
+            addGuaranteeSection();
+            addTelegramLink();
+        });
+
+        // Hesap erişimi için stil güncellemeleri
+        const passwordSectionStyles = `
+        .password-section {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+        .password-card {
+            background: rgba(31,41,55,0.5);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255, 70, 85, 0.2);
+            width: 250px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 70, 85, 0.2);
+        }
+        .password-card h2 {
+            color: var(--primary-color);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .password-input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            background-color: rgba(15, 25, 35, 0.5);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .submit-btn:hover {
+            background-color: #ff6b7a;
+            transform: scale(1.05);
+        }
+        .guarantee-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .guarantee-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .guarantee-links a:hover {
+            color: #ff6b7a;
+        }
+        `;
+
+        const passwordSectionStyleElement = document.createElement('style');
+        passwordSectionStyleElement.textContent = passwordSectionStyles;
+        document.head.appendChild(passwordSectionStyleElement);
+
+        // Hesap erişimi modalını güncelle
+        function updatePasswordSection() {
+            const passwordSection = document.getElementById('passwordSection');
+            passwordSection.innerHTML = `
+                <div class="password-card">
+                    <h2>Hesap Erişimi</h2>
+                    <input type="password" class="password-input" id="passwordInput" placeholder="Şifrenizi Girin">
+                    <button class="submit-btn" onclick="checkPassword()">Giriş Yap</button>
+                    <div class="guarantee-links">
+                        <a href="#" onclick="showGuaranteeDetails()">Güvence Detayları</a>
+                        <a href="https://t.me/maskelix1" target="_blank">Destek Hattı</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Sayfa yüklendiğinde güncellemeyi çağır
+        window.addEventListener('load', updatePasswordSection);
+    </script>
+</body>
+</html>

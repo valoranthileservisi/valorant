@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valorant Hile Servisi - Sınırsız Güç!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff1a1a;
+            --secondary-color: #0a0a1a;
+            --accent-color: #ff4655;
+            --text-color: #ffffff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--secondary-color);
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #1a0a15 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1500px;
+            overflow-x: hidden;
+        }
+        .glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 26, 26, 0.05),
+                rgba(255, 26, 26, 0.05) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.3;
+        }
+        .cheat-container {
+            width: 95%;
+            max-width: 1400px;
+            height: auto;
+            min-height: 90vh;
+            background: linear-gradient(135deg, rgba(10, 10, 26, 0.9), rgba(31, 15, 20, 0.9));
+            border-radius: 15px;
+            box-shadow: 0 0 60px rgba(255, 26, 26, 0.3);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--primary-color);
+            margin: 10px;
+        }
+        .cheat-header {
+            background: linear-gradient(to right, rgba(255,26,26,0.2), rgba(255,26,26,0.1));
+            padding: 10px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            position: relative;
+            z-index: 10;
+        }
+        .cheat-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: clamp(18px, 5vw, 24px);
+            text-shadow: 0 0 10px rgba(255, 26, 26, 0.5);
+            animation: hackText 2s infinite alternate;
+        }
+        @keyframes hackText {
+            0% { transform: skew(-3deg); }
+            50% { transform: skew(3deg); }
+            100% { transform: skew(-3deg); }
+        }
+        .video-showcase {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            flex-wrap: wrap;
+        }
+        .video-item {
+            width: 100%;
+            max-width: 280px;
+            background: rgba(31,15,20,0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 26, 26, 0.2);
+            transition: all 0.3s;
+            position: relative;
+            border: 2px solid transparent;
+        }
+        .video-item:hover {
+            transform: scale(1.03) rotate(1deg);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 30px rgba(255, 26, 26, 0.4);
+        }
+        .video-item iframe {
+            width: 100%;
+            height: 160px;
+            border: none;
+            aspect-ratio: 16/9;
+        }
+        .video-details {
+            padding: 10px;
+            text-align: center;
+            background: rgba(10, 10, 26, 0.7);
+        }
+        .video-details h3 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: clamp(14px, 4vw, 16px);
+        }
+        .video-details p {
+            font-size: clamp(12px, 3.5vw, 13px);
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+        .buy-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 8px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: clamp(12px, 3.5vw, 14px);
+        }
+        .buy-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                transparent 0%,
+                rgba(255,255,255,0.2) 50%,
+                transparent 100%
+            );
+            transform: rotate(-45deg);
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { transform: rotate(-45deg) translateX(-100%); }
+            100% { transform: rotate(-45deg) translateX(100%); }
+        }
+        .buy-button:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 15px rgba(255, 26, 26, 0.5);
+        }
+        .guarantee-section {
+            background: rgba(31,15,20,0.7);
+            padding: 15px;
+            text-align: center;
+            border-top: 2px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+        .guarantee-section p {
+            color: var(--text-color);
+            font-size: clamp(12px, 3.5vw, 13px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .telegram-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #0088cc;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 8px;
+            transition: all 0.3s;
+            gap: 8px;
+            font-size: clamp(12px, 3.5vw, 13px);
+        }
+        .telegram-button i {
+            font-size: clamp(16px, 4vw, 18px);
+        }
+        .telegram-button:hover {
+            background-color: #00a2ff;
+            transform: scale(1.03);
+        }
+        .guarantee-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to right, rgba(0,255,0,0.2), rgba(0,255,0,0.1));
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--text-color);
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,255,0,0.3);
+            font-size: clamp(10px, 3vw, 12px);
+        }
+        .video-details .guarantee-text {
+            color: var(--primary-color);
+            font-size: clamp(10px, 3vw, 11px);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .video-details .guarantee-text i {
+            color: green;
+            font-size: clamp(12px, 3.5vw, 14px);
+        }
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { 
+                text-shadow: 0 0 5px rgba(255,255,255,0.3);
+                transform: scale(1);
+            }
+            50% { 
+                text-shadow: 0 0 10px rgba(255,255,255,0.7);
+                transform: scale(1.01);
+            }
+        }
+        .guarantee-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, 
+                transparent, 
+                var(--primary-color), 
+                var(--accent-color), 
+                transparent
+            );
+            animation: shimmer 3s infinite linear;
+            background-size: 1000px 100%;
+        }
+        .guarantee-section p:first-of-type {
+            animation: pulse-glow 3s infinite alternate;
+            padding: 10px;
+            background: linear-gradient(to right, 
+                rgba(255,26,26,0.1), 
+                rgba(10,10,26,0.3)
+            );
+            border-radius: 8px;
+            margin: 8px;
+        }
+        .guarantee-section p:first-of-type i {
+            font-size: clamp(16px, 4vw, 18px);
+            color: #00ff00;
+            text-shadow: 0 0 8px rgba(0,255,0,0.5);
+        }
+        .guarantee-section p:first-of-type:hover {
+            transform: scale(1.01);
+            background: linear-gradient(to right, 
+                rgba(255,26,26,0.2), 
+                rgba(10,10,26,0.4)
+            );
+        }
+        .guarantee-section p:first-of-type:hover i {
+            transform: rotate(360deg);
+        }
+        .guarantee-section p:last-of-type {
+            background: rgba(10,10,26,0.3);
+            border-radius: 8px;
+            margin: 8px;
+        }
+        .guarantee-section p:last-of-type span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .guarantee-section p:last-of-type span:nth-child(1) {
+            animation: secure-shield-pulse 3s infinite alternate;
+        }
+        .guarantee-section p:last-of-type span:nth-child(2) {
+            animation: support-hands-wave 2s infinite alternate;
+        }
+        .guarantee-section p:last-of-type span:nth-child(3) {
+            animation: satisfaction-sparkle 2.5s infinite alternate;
+        }
+        .guarantee-section p:last-of-type span:hover {
+            transform: scale(1.05);
+            color: var(--text-color);
+        }
+        @keyframes secure-shield-pulse {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                text-shadow: 0 0 5px rgba(0,255,0,0.3);
+            }
+            50% { 
+                transform: scale(1.05) rotate(3deg);
+                text-shadow: 0 0 10px rgba(0,255,0,0.7);
+            }
+        }
+        @keyframes support-hands-wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        @keyframes satisfaction-sparkle {
+            0%, 100% { 
+                text-shadow: 0 0 3px rgba(255,255,255,0.3);
+                transform: scale(1);
+            }
+            50% { 
+                text-shadow: 0 0 8px rgba(255,255,255,0.8);
+                transform: scale(1.03);
+            }
+        }
+        .recent-orders {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            width: clamp(250px, 90%, 300px);
+            background: linear-gradient(135deg, rgba(10, 10, 26, 0.9), rgba(31, 15, 20, 0.9));
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 -5px 20px rgba(255, 26, 26, 0.2);
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            border: 2px solid var(--primary-color);
+            animation: float-bottom 3s infinite alternate;
+            max-height: 120px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .recent-orders.hidden {
+            opacity: 0;
+            transform: translateX(-120%) translateY(50%);
+            pointer-events: none;
+        }
+        .recent-orders-close {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,26,26,0.3);
+            color: var(--primary-color);
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .recent-orders-close:hover {
+            background: rgba(255,26,26,0.5);
+            transform: rotate(90deg);
+        }
+        @keyframes float-bottom {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-5px); }
+        }
+        .recent-orders h3 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-size: clamp(12px, 3.5vw, 13px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .recent-orders h3 i {
+            color: var(--accent-color);
+            animation: pulse 2s infinite alternate;
+        }
+        .order-item {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, rgba(31, 15, 20, 0.7), rgba(10, 10, 26, 0.7));
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 26, 26, 0.2);
+            transition: all 0.3s ease;
+            position: absolute;
+        }
+        .order-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                transparent 0%,
+                rgba(255,255,255,0.1) 50%,
+                transparent 100%
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        .order-item:hover {
+            transform: scale(1.01);
+            box-shadow: 0 0 10px rgba(255, 26, 26, 0.3);
+        }
+        .order-item .order-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .order-item .order-id {
+            color: var(--primary-color);
+            font-size: clamp(10px, 3vw, 11px);
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+        .order-item .order-product {
+            color: var(--text-color);
+            font-size: clamp(8px, 2.5vw, 9px);
+            opacity: 0.7;
+        }
+        .order-item .order-time {
+            color: var(--accent-color);
+            font-size: clamp(8px, 2.5vw, 9px);
+            font-weight: bold;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        .order-item.highlight {
+            background: linear-gradient(to right, rgba(255,26,26,0.3), rgba(255,26,26,0.1));
+            box-shadow: 0 0 15px rgba(255, 26, 26, 0.5);
+            transform: scale(1.03);
+        }
+        .single-order-container {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .order-item.new-order {
+            animation: newOrderAnimation 0.5s ease-out;
+        }
+        @keyframes newOrderAnimation {
+            0% {
+                transform: translateY(100%) scale(0.8);
+                opacity: 0;
+            }
+            70% {
+                transform: translateY(-10%) scale(1.03);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+        .pricing-details {
+            text-align: center;
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(10, 10, 26, 0.5);
+            border-radius: 8px;
+        }
+        .pricing-details p {
+            margin: 4px 0;
+            color: var(--text-color);
+            font-size: clamp(11px, 3.2vw, 12px);
+        }
+        .pricing-details p del {
+            color: rgba(255,255,255,0.5);
+            text-decoration-color: red;
+        }
+        .pricing-details p:last-child {
+            font-weight: bold;
+            margin-top: 8px;
+            color: #00ff00;
+        }
+        .discount-banner {
+            position: relative;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(255, 26, 26, 0.5);
+            animation: banner-float 2s infinite alternate;
+            font-size: clamp(10px, 3.5vw, 12px);
+        }
+        .discount-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .discount-banner-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .discount-banner-icon::before {
+            content: '';
+            font-size: 30px;
+            animation: fire-pulse 1s infinite alternate;
+            text-shadow: 0 0 10px rgba(255,255,255,0.7);
+        }
+        .discount-banner-icon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: glow-pulse 1.5s infinite alternate;
+        }
+        @keyframes banner-float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-3px); }
+        }
+        @keyframes fire-pulse {
+            0% { transform: scale(0.9) rotate(-3deg); opacity: 0.8; }
+            100% { transform: scale(1.05) rotate(3deg); opacity: 1; }
+        }
+        @keyframes glow-pulse {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.1); opacity: 0.2; }
+        }
+        @media screen and (max-width: 600px) {
+            .cheat-container {
+                margin: 5px;
+                border-radius: 10px;
+                height: auto;
+            }
+            .cheat-header {
+                padding: 8px;
+            }
+            .video-item {
+                max-width: 100%;
+                margin: 0 auto;
+            }
+            .video-item iframe {
+                height: 140px;
+            }
+            .video-details {
+                padding: 8px;
+            }
+            .video-details h3 {
+                font-size: clamp(12px, 4vw, 14px);
+            }
+            .video-details p {
+                font-size: clamp(10px, 3.5vw, 11px);
+            }
+            .buy-button {
+                padding: 8px;
+                font-size: clamp(10px, 3.5vw, 12px);
+            }
+            .guarantee-overlay {
+                padding: 6px;
+                font-size: clamp(9px, 3vw, 10px);
+            }
+            .guarantee-section {
+                padding: 10px;
+            }
+            .guarantee-section p {
+                font-size: clamp(10px, 3.5vw, 11px);
+                gap: 6px;
+            }
+            .telegram-button {
+                padding: 6px 12px;
+                font-size: clamp(10px, 3.5vw, 11px);
+            }
+            .telegram-button i {
+                font-size: clamp(14px, 4vw, 16px);
+            }
+            .recent-orders {
+                width: clamp(200px, 90%, 260px);
+                bottom: 8px;
+                left: 5%;
+                padding: 6px;
+                max-height: 100px;
+            }
+            .recent-orders h3 {
+                font-size: clamp(10px, 3.5vw, 11px);
+                margin-bottom: 6px;
+            }
+            .single-order-container {
+                height: 40px;
+            }
+            .order-item .order-id {
+                font-size: clamp(9px, 3vw, 10px);
+            }
+            .order-item .order-product {
+                font-size: clamp(7px, 2.5vw, 8px);
+            }
+            .order-item .order-time {
+                font-size: clamp(7px, 2.5vw, 8px);
+            }
+            .pricing-details {
+                padding: 6px;
+            }
+            .pricing-details p {
+                font-size: clamp(10px, 3.2vw, 11px);
+            }
+            .discount-banner {
+                padding: 6px;
+                font-size: clamp(9px, 3.5vw, 10px);
+                gap: 8px;
+            }
+            .discount-banner-icon {
+                width: 25px;
+                height: 25px;
+            }
+            .discount-banner-icon::before {
+                font-size: 25px;
+            }
+        }
+        @media screen and (max-width: 400px) {
+            .cheat-container {
+                margin: 3px;
+                border-radius: 8px;
+            }
+            .video-item iframe {
+                height: 120px;
+            }
+            .recent-orders {
+                width: clamp(180px, 90%, 220px);
+                max-height: 90px;
+            }
+            .single-order-container {
+                height: 35px;
+            }
+            .discount-banner {
+                padding: 5px;
+                font-size: clamp(8px, 3vw, 9px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glitch-overlay"></div>
+    <div class="cheat-container">
+        <div class="cheat-header">
+            <h1>Valorant Hile Servisi</h1>
+        </div>
+        
+        <div class="discount-banner">
+            <div class="discount-banner-content">
+                <div class="discount-banner-icon"></div>
+                ÖZEL İNDİRİM: %30 TASARRUF
+                <div class="discount-banner-icon"></div>
+            </div>
+        </div>
+        
+        <div class="video-showcase">
+            <div class="video-item">
+                <div class="guarantee-overlay">Güvenli Satın Alma Garantisi <i class="fas fa-lock" style="color: yellow; margin-left: 5px;"></i></div>
+                <iframe src="https://streamable.com/e/fifgf6" allowfullscreen></iframe>
+                <div class="video-details">
+                    <h3>Valorant Aimbot</h3>
+                    <p>Rakiplerinizi şaşırtın! Mükemmel nişan alma ve duvar görme özellikleri.</p>
+                    <div class="guarantee-text">
+                        <i class="fas fa-shield-alt"></i> %100 Para İade Garantisi
+                    </div>
+                    <div class="pricing-details">
+                        <p>Aylık: <del>750 TL</del> 500 TL</p>
+                        <p>Sınırsız: <del>1250 TL</del> 1000 TL</p>
+                        <p>Toplam Tasarruf: %30 <i class="fas fa-star" style="color: #FFD700; margin-left: 5px; text-shadow: 0 0 5px rgba(255,215,0,0.7); animation: pulse 1s infinite alternate;"></i></p>
+                    </div>
+                    <a href="https://t.me/maskelix1" target="_blank" class="buy-button">Hemen Satın Al</a>
+                </div>
+            </div>
+            
+            <div class="video-item">
+                <div class="guarantee-overlay">Güvenli Satın Alma Garantisi <i class="fas fa-lock" style="color: yellow; margin-left: 5px;"></i></div>
+                <iframe src="https://streamable.com/e/hv68zf" allowfullscreen></iframe>
+                <div class="video-details">
+                    <h3>Zula Generator</h3>
+                    <p>Oyun içi kaynaklarınızı sınırsız olarak artırın. Rakiplerinizden bir adım önde olun!</p>
+                    <div class="guarantee-text">
+                        <i class="fas fa-shield-alt"></i> %100 Para İade Garantisi
+                    </div>
+                    <div class="pricing-details">
+                        <p>Aylık: <del>750 TL</del> 500 TL</p>
+                        <p>Sınırsız: <del>1250 TL</del> 1000 TL</p>
+                        <p>Toplam Tasarruf: %30 <i class="fas fa-star" style="color: #FFD700; margin-left: 5px; text-shadow: 0 0 5px rgba(255,215,0,0.7); animation: pulse 1s infinite alternate;"></i></p>
+                    </div>
+                    <a href="https://t.me/maskelix1" target="_blank" class="buy-button">Hemen Satın Al</a>
+                </div>
+            </div>
+            
+            <div class="video-item">
+                <div class="guarantee-overlay">Güvenli Satın Alma Garantisi <i class="fas fa-lock" style="color: yellow; margin-left: 5px;"></i></div>
+                <iframe src="https://streamable.com/e/m4f1i8" allowfullscreen></iframe>
+                <div class="video-details">
+                    <h3>Valorant VP Generator</h3>
+                    <p>Sınırsız VP kazanın! Tüm skinlere ücretsiz erişim.</p>
+                    <div class="guarantee-text">
+                        <i class="fas fa-shield-alt"></i> %100 Para İade Garantisi
+                    </div>
+                    <div class="pricing-details">
+                        <p>Aylık: <del>750 TL</del> 500 TL</p>
+                        <p>Sınırsız: <del>1250 TL</del> 1000 TL</p>
+                        <p>Toplam Tasarruf: %30 <i class="fas fa-star" style="color: #FFD700; margin-left: 5px; text-shadow: 0 0 5px rgba(255,215,0,0.7); animation: pulse 1s infinite alternate;"></i></p>
+                    </div>
+                    <a href="https://t.me/maskelix1" target="_blank" class="buy-button">Hemen Satın Al</a>
+                </div>
+            </div>
+
+            <div class="video-item">
+                <div class="guarantee-overlay">Güvenli Satın Alma Garantisi <i class="fas fa-lock" style="color: yellow; margin-left: 5px;"></i></div>
+                <iframe src="https://streamable.com/e/u0ir76" allowfullscreen></iframe>
+                <div class="video-details">
+                    <h3>Valorant Skin Kaldırma</h3>
+                    <p>Tüm skinleri kaldırın ve oyun içi görünümü sıfırlayın!</p>
+                    <div class="guarantee-text">
+                        <i class="fas fa-shield-alt"></i> %100 Para İade Garantisi
+                    </div>
+                    <div class="pricing-details">
+                        <p>Aylık: <del>750 TL</del> 500 TL</p>
+                        <p>Sınırsız: <del>1250 TL</del> 1000 TL</p>
+                        <p>Toplam Tasarruf: %30 <i class="fas fa-star" style="color: #FFD700; margin-left: 5px; text-shadow: 0 0 5px rgba(255,215,0,0.7); animation: pulse 1s infinite alternate;"></i></p>
+                    </div>
+                    <a href="https://t.me/maskelix1" target="_blank" class="buy-button">Hemen Satın Al</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="guarantee-section">
+            <p>
+                <i class="fas fa-shield-alt"></i> 
+                %100 Para İade Garantisi | 30 Gün Ücretsiz Destek | Birebir Müşteri Hizmeti
+            </p>
+            <p>
+                <span><i class="fas fa-shopping-cart" style="color: #4CAF50; margin-right: 5px; text-shadow: 0 0 5px rgba(76,175,80,0.5);"></i>Güvenli Alışveriş</span> | 
+                <span><i class="fas fa-headset" style="color: #2196F3; margin-right: 5px; text-shadow: 0 0 5px rgba(33,150,243,0.5);"></i>Profesyonel Destek</span> | 
+                <span><i class="fas fa-smile-beam" style="color: #FF9800; margin-right: 5px; text-shadow: 0 0 5px rgba(255,152,0,0.5);"></i>Tam Memnuniyet Garantisi</span>
+            </p>
+            <a href="https://t.me/maskelix1" target="_blank" class="telegram-button">
+                <i class="fab fa-telegram"></i> Telegram Destek Hattı
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('iframe').forEach(iframe => {
+            iframe.addEventListener('load', () => {
+                document.querySelectorAll('iframe').forEach(otherIframe => {
+                    if (otherIframe !== iframe) {
+                        otherIframe.contentWindow.postMessage('pause', '*');
+                    }
+                });
+            });
+        });
+
+        function generateRecentOrders() {
+            const products = [
+                { name: 'Valorant Aimbot', prefix: 'VLR', icon: '' },
+                { name: 'Zula Generator', prefix: 'ZLA', icon: '' },
+                { name: 'VP Generator', prefix: 'VPG', icon: '' },
+                { name: 'Skin Kaldırma', prefix: 'SKN', icon: '' }
+            ];
+
+            const recentOrdersContainer = document.createElement('div');
+            recentOrdersContainer.className = 'recent-orders';
+            
+            const closeButton = document.createElement('div');
+            closeButton.className = 'recent-orders-close';
+            closeButton.innerHTML = '✕';
+            closeButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                recentOrdersContainer.classList.add('hidden');
+            });
+            recentOrdersContainer.appendChild(closeButton);
+            
+            const header = document.createElement('h3');
+            header.innerHTML = `Son Sipariş <i class="fas fa-fire"></i>`;
+            recentOrdersContainer.appendChild(header);
+
+            const singleOrderContainer = document.createElement('div');
+            singleOrderContainer.className = 'single-order-container';
+            recentOrdersContainer.appendChild(singleOrderContainer);
+
+            function generateNewOrder() {
+                if (recentOrdersContainer.classList.contains('hidden')) return;
+
+                const product = products[Math.floor(Math.random() * products.length)];
+                const randomId = Math.floor(Math.random() * 9000) + 1000;
+                const timeAgo = Math.floor(Math.random() * 50) + 1;
+
+                singleOrderContainer.innerHTML = `
+                    <div class="order-item">
+                        <div class="order-details">
+                            <div class="order-id">#${product.prefix}-${randomId} ${product.icon}</div>
+                            <div class="order-product">${product.name}</div>
+                        </div>
+                        <div class="order-time">${timeAgo} dk önce</div>
+                    </div>
+                `;
+
+                singleOrderContainer.querySelector('.order-item').classList.add('new-order');
+                
+                setTimeout(() => {
+                    singleOrderContainer.querySelector('.order-item').classList.remove('new-order');
+                }, 1000);
+            }
+
+            generateNewOrder();
+            const orderInterval = setInterval(generateNewOrder, 3000);
+
+            recentOrdersContainer.addEventListener('click', (e) => {
+                if (e.target === recentOrdersContainer) {
+                    recentOrdersContainer.classList.add('hidden');
+                    clearInterval(orderInterval);
+                }
+            });
+
+            document.body.appendChild(recentOrdersContainer);
+        }
+
+        window.addEventListener('load', generateRecentOrders);
+    </script>
+</body>
+</html>
